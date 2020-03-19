@@ -1,5 +1,5 @@
 {
-  "name": "wohui-pinyin",
+  "name": "@wohui/pinyin",
   "description": "get pinyin from chinese or reverse",
   "author": "rex@interactivelabs.co",
   "scripts": {
@@ -16,5 +16,13 @@
   },
   "devDependencies": {
     "typescript": "^3.8.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wohuipteltd/pinyin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wohuipteltd/pinyin/issues"
+  },
+  "homepage": "https://github.com/wohuipteltd/pinyin#readme"
 }
