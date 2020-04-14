@@ -151,7 +151,7 @@ export const start = () => {
   console.timeEnd('pinyin_to_chinese')
 }
 
-export const numeric_tone = (str: string): NumericTone => {
+const numeric_tone = (str: string): NumericTone => {
   const m = numeric_tone_pattern.exec(str)
   if (m) {
     return [m[1], Number(m[2])]
