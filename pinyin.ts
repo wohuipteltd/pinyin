@@ -210,9 +210,9 @@ export const revert_numeric_tone = (tone_num: NumericTone) => {
 export const tonemark = (text: string) => numeric_tones(text).map(revert_numeric_tone).join(' ')
 
 export const pinyin = (text: string, type: 'tone' | 'num') => {
-  if (!text) return
+  if (!text) return null
   const nums = hanzi.getPinyin(text)
-  if (!nums) return
+  if (!nums) return null
   if (type == 'tone') {
     return numeric_tones_binary(nums[0], true, ' ')
   }
