@@ -11,7 +11,7 @@
   "version": "1.0.5",
   "dependencies": {
     "hanzi": "^2.1.5",
-    "pinyin4js": "^1.3.18"
+    "lodash": "^4.17.15"
   },
   "peerDependencies": {
     "lodash": "^4.17.15"

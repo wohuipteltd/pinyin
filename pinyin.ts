@@ -1,54 +1,9 @@
-import { PinyinHelper, PinyinFormat } from 'pinyin4js/lib/PinyinHelper'
-import { mutil_pinyin_dict as multi_pinyin_dict } from 'pinyin4js/lib/dict/mutil_pinyin.dict'
 const pinyin_to_chinese_dict: { [key: string]: string[] } = {}
 import * as _ from 'lodash'
 import * as hanzi from 'hanzi'
 
 const PinyinRegexp = /([A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
 const ChineseRegexp = /([\u4e00-\u9fa5]|[A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
-
-multi_pinyin_dict["假期"] = "jià,qī"
-
-PinyinHelper.addMutilPinyinDictResource({
-  "校长": "xiào,zhǎng",
-  "村长": "cūn,zhǎng",
-  "园长": "yuán,zhǎng",
-  "家长": "jiā,zhǎng",
-  "年长": "nián,zhǎng",
-  "嗯": "ń",
-  "哪儿": "nǎ 'er",
-  "这儿": "zhè-er",
-  "长大": "zhǎng,dà",
-  "哥哥": "gē,ge",
-  "弟弟": "dì,di",
-  "妈妈": "mā,ma",
-  "爸爸": "bà,ba",
-  "爷爷": "yé,ye",
-  "奶奶": "nǎi,nai",
-  "姐姐": "jiě,jie",
-  "姥姥": "lǎo,lao",
-  "长的": "zhǎng,de",
-  "快点儿": "kuài,diǎn,r",
-  "饭馆儿": "fàn,guǎn,r",
-  "天儿": "tiān,r",
-  "对不起": "duì,bu,qǐ",
-  "太行山": "tài,háng,shān",
-  "牛仔日": "niú,zǎi,rì",
-  "牛仔": "niú,zǎi",
-  "睡觉": "shuì,jiào"
-})
-
-PinyinHelper.addPinyinDictResource({
-  '谁': 'shuí,shéi'
-})
-// pinyin_dict['谁'] = 'shuí,shéi'
-// pinyin_dict['么'] = 'me'
-export const PinyinTypes = {
-  tone: PinyinFormat.WITH_TONE_MARK,
-  outtone: PinyinFormat.WITHOUT_TONE,
-  num: PinyinFormat.WITH_TONE_NUMBER,
-  head: PinyinFormat.FIRST_LETTER
-}
 
 const vowels = {
   'üē': ['ve', 1],
@@ -187,7 +142,7 @@ export const tolerant = (text: string, pinyin_str: string) => {
   return pinyin_array.every(([tone, num], i) => {
     if (character_array[i] === tone) return true
     console.log(character_array[i], [tone, num])
-    const pinyins = PinyinHelper._convertToPinyinArray(character_array[i], PinyinFormat.WITH_TONE_NUMBER)
+    const pinyins = hanzi.getPinyin(character_array[i])
     console.log({ pinyins })
     if (Array.isArray(pinyins)) {
       const found = pinyins.some((p: string) => {
@@ -254,8 +209,12 @@ export const revert_numeric_tone = (tone_num: NumericTone) => {
 
 export const tonemark = (text: string) => numeric_tones(text).map(revert_numeric_tone).join(' ')
 
-export const pinyin = (text: string, type: keyof typeof PinyinTypes) => {
-  return PinyinHelper.convertToPinyinString(text, ' ', PinyinTypes[type])
+export const pinyin = (text: string, type: 'tone' | 'num') => {
+  const num = hanzi.getPinyin(text)[0]
+  if (type == 'tone') {
+    return numeric_tones_binary(num, true, ' ')
+  }
+  return num
 }
 
 const revert_numeric_tone_regexp = (tone_num: NumericTone) => {
