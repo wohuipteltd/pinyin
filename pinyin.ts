@@ -212,7 +212,13 @@ export const tonemark = (text: string) => numeric_tones(text).map(revert_numeric
 export const pinyin = (text: string, type: 'tone' | 'num') => {
   if (!text) return null
   const segments = hanzi.segment(text)
-  const num = segments.map(seg => hanzi.getPinyin(text)).join(' ')
+  const num = segments.map(seg => {
+    const pinyin = hanzi.getPinyin(seg)
+    if (Array.isArray(pinyin)) {
+      return pinyin[0]
+    }
+    return pinyin
+  }).join(' ')
   if (type == 'tone') {
     return numeric_tones_binary(num, true, ' ')
   }
