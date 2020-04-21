@@ -211,12 +211,12 @@ export const tonemark = (text: string) => numeric_tones(text).map(revert_numeric
 
 export const pinyin = (text: string, type: 'tone' | 'num') => {
   if (!text) return null
-  const nums = hanzi.getPinyin(text)
-  if (!nums) return null
+  const segments = hanzi.segment(text)
+  const num = segments.map(seg => hanzi.getPinyin(text)).join(' ')
   if (type == 'tone') {
-    return numeric_tones_binary(nums[0], true, ' ')
+    return numeric_tones_binary(num, true, ' ')
   }
-  return nums[0]
+  return num
 }
 
 const revert_numeric_tone_regexp = (tone_num: NumericTone) => {
