@@ -4,6 +4,7 @@ import * as hanzi from 'hanzi'
 
 const PinyinRegexp = /([A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
 const ChineseRegexp = /([\u4e00-\u9fa5]|[A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
+const NoneChineseRegexp = /([^\u4e00-\u9fa5]+)/g
 
 const vowels = {
   'üē': ['ve', 1],
@@ -136,28 +137,44 @@ export const tolerant = (text: string, pinyin_str: string) => {
   if (character_array.length === 0) return true
   const pinyin_array = re_filter(PinyinRegexp, pinyin_str).map(numeric_tone)
   if (pinyin_array.length !== character_array.length) {
-    console.log(pinyin_array, character_array)
+    console.log(`length doesn't match`, pinyin_array, character_array)
     return false
   }
-  let consumed = 0
-  let matches = true
-  const segments = hanzi.segment(text)
-  for (const segment of segments) {
-    const pinyins = hanzi.getPinyin(segment)
-    if (!pinyins) continue
-    matches = pinyins.some((pinyin_str_small) => {
-      const pinyin_array_small = re_filter(PinyinRegexp, patch_hanzi_num(pinyin_str_small)).map(numeric_tone)
-      
-      return pinyin_array_small.some(([t, n], i) => {
-        const [tone, num] = pinyin_array[consumed + i]
-        return t === tone && (n === num || num === 5)
-      })
-    })
-    if (!matches) {
-      console.log(segment, pinyin_array.slice(consumed, consumed + segment.length), `doesn't match any`, pinyins)
-      break
+  let i = 0
+  const try_consume = (c: string) => {
+    if (pinyin_array.length == i) {
+      return true
     }
-    consumed += segment.length
+    const [t, n] = numeric_tone(c)
+    const [tone, num] = pinyin_array[i]
+    if (t === tone && (n === num || num === 5)) {
+      // console.log(`match`, c, [tone, num])
+      i++
+      return true
+    }
+  }
+
+  for (const seg of pinyin_iterator(text)) {
+    if (Array.isArray(seg)) {
+      let matched_any = false
+      for (const item of seg) {
+        const array = re_filter(PinyinRegexp, item)
+        for (const c of array) {
+          if (try_consume(c)) {
+            matched_any = true
+          }
+        }
+        if (matched_any) {
+          break
+        }
+      }
+    } else {
+      try_consume(seg)
+    }
+  }
+  const matches = i == pinyin_array.length
+  if (!matches) {
+    console.log(`doesn't match any`, pinyin_array[i])
   }
   return matches
 }
@@ -209,22 +226,58 @@ export const revert_numeric_tone = (tone_num: NumericTone) => {
 export const tonemark = (text: string) => numeric_tones(text).map(revert_numeric_tone).join(' ')
 
 const patch_hanzi_num = (hanzi_pinyin: string) => {
-  return hanzi_pinyin.replace('u:', 'v')
+  return hanzi_pinyin.toLocaleLowerCase().replace('u:', 'v')
 }
 
-export const pinyin = (text: string, type: 'tone' | 'num') => {
-  if (!text) return null
-  const segments = hanzi.segment(text)
-  const num = segments.map(seg => {
-    const pinyin = hanzi.getPinyin(seg)
-    if (Array.isArray(pinyin)) {
-      return patch_hanzi_num(pinyin[0]) + ' '
+function* pinyin_iterator(text: string) {
+  if (!text) return text
+
+  const character_array: {chinese: boolean, group: string }[] = []
+  NoneChineseRegexp.exec(text)
+  let previous = 0
+  text.replace(NoneChineseRegexp, (_, group, start) => {
+    if (start !== previous) {
+      character_array.push({
+        chinese: true,
+        group: text.substring(previous, start)
+      })
     }
-    if (pinyin) {
-      return patch_hanzi_num(pinyin) + ' '
+    previous = start + group.length
+    character_array.push({
+      chinese: false,
+      group
+    })
+    return ''
+  })
+  // console.log(character_array)
+  for (const { group, chinese } of character_array) {
+    if (!chinese) {
+      yield group
+    } else {
+      for (const seg of hanzi.segment(group)) {
+        const pinyin = hanzi.getPinyin(seg)
+        if (Array.isArray(pinyin)) {
+          yield pinyin.map(patch_hanzi_num)
+        } else if (pinyin) {
+          yield patch_hanzi_num(pinyin)
+        } else {
+          yield seg
+        }
+      }
     }
-    return seg
-  }).join('').trim()
+  }
+}
+
+export function pinyin(text: string, type: 'tone' | 'num') {
+  const result = []
+  for (const seg of pinyin_iterator(text)) {
+    if (Array.isArray(seg)) {
+      result.push(seg[0])
+    } else {
+      result.push(seg)
+    }
+  }
+  const num = result.join(' ')
   if (type == 'tone') {
     return numeric_tones_binary(num, true, ' ')
   }
@@ -270,7 +323,7 @@ export const chinese = (pinyin_str: string) => {
 
 // (() => {
 //   start()
-//   const text = '汪峰老师！我是从小听着您的歌长大的~'
+//   let text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
 //   const p = pinyin(text, 'tone')
 //   console.log(`pinyin('${text}', 'tone') =>`, p);
 //   // console.log(`hanzi.getPinyin('呱') =>`, hanzi.getPinyin('呱'));
