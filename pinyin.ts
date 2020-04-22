@@ -209,7 +209,7 @@ export const revert_numeric_tone = (tone_num: NumericTone) => {
 export const tonemark = (text: string) => numeric_tones(text).map(revert_numeric_tone).join(' ')
 
 const patch_hanzi_num = (hanzi_pinyin: string) => {
-  return hanzi_pinyin.replace('lu:e', 'lve')
+  return hanzi_pinyin.replace('u:', 'v')
 }
 
 export const pinyin = (text: string, type: 'tone' | 'num') => {
