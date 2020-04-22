@@ -249,6 +249,12 @@ function* pinyin_iterator(text: string) {
     })
     return ''
   })
+  if (previous !== text.length) {
+    character_array.push({
+      chinese: true,
+      group: text.substring(previous)
+    })
+  }
   // console.log(character_array)
   for (const { group, chinese } of character_array) {
     if (!chinese) {
@@ -323,7 +329,9 @@ export const chinese = (pinyin_str: string) => {
 
 // (() => {
 //   start()
-//   let text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
+//   // let text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
+//   let text
+//   text = 'XXXX年'
 //   const p = pinyin(text, 'tone')
 //   console.log(`pinyin('${text}', 'tone') =>`, p);
 //   // console.log(`hanzi.getPinyin('呱') =>`, hanzi.getPinyin('呱'));
