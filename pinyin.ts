@@ -147,7 +147,7 @@ export const tolerant = (text: string, pinyin_str: string) => {
     if (!pinyins) continue
 
     matches = pinyins.some((pinyin_str_small) => {
-      const pinyin_array_small = re_filter(PinyinRegexp, pinyin_str_small).map(numeric_tone)
+      const pinyin_array_small = re_filter(PinyinRegexp, patch_hanzi_num(pinyin_str_small)).map(numeric_tone)
       return pinyin_array_small.some(([t, n], i) => {
         const [tone, num] = pinyin_array[consumed + i]
         return t === tone && (n === num || num === 5)
@@ -208,15 +208,19 @@ export const revert_numeric_tone = (tone_num: NumericTone) => {
 
 export const tonemark = (text: string) => numeric_tones(text).map(revert_numeric_tone).join(' ')
 
+const patch_hanzi_num = (hanzi_pinyin: string) => {
+  return hanzi_pinyin.replace('lu:e', 'lve')
+}
+
 export const pinyin = (text: string, type: 'tone' | 'num') => {
   if (!text) return null
   const segments = hanzi.segment(text)
   const num = segments.map(seg => {
     const pinyin = hanzi.getPinyin(seg)
     if (Array.isArray(pinyin)) {
-      return pinyin[0]
+      return patch_hanzi_num(pinyin[0])
     }
-    return pinyin || seg
+    return patch_hanzi_num(pinyin || seg)
   }).join(' ')
   if (type == 'tone') {
     return numeric_tones_binary(num, true, ' ')
