@@ -139,29 +139,28 @@ export const tolerant = (text: string, pinyin_str: string) => {
     console.log(pinyin_array, character_array)
     return false
   }
-  return pinyin_array.every(([tone, num], i) => {
-    if (character_array[i] === tone) return true
-    console.log(character_array[i], [tone, num])
-    const pinyins = hanzi.getPinyin(character_array[i])
-    console.log({ pinyins })
-    if (Array.isArray(pinyins)) {
-      const found = pinyins.some((p: string) => {
-        const [t, n] = numeric_tone(p)
+  let consumed = 0
+  let matches = true
+  const segments = hanzi.segment(text)
+  for (const segment of segments) {
+    const pinyins = hanzi.getPinyin(segment)
+    if (!pinyins) continue
+
+    matches = pinyins.some((pinyin_str_small) => {
+      const pinyin_array_small = re_filter(PinyinRegexp, pinyin_str_small).map(numeric_tone)
+      return pinyin_array_small.some(([t, n], i) => {
+        const [tone, num] = pinyin_array[consumed + i]
         return t === tone && (n === num || num === 5)
       })
-      if (!found) {
-        console.log([tone, num], `doesn't match any`, pinyins)
-      }
-      return found
-    } else {
-      console.log(character_array[i], "failed to look up pinyin of");
+    })
+    if (!matches) {
+      console.log(segment, pinyin_array.slice(consumed, consumed + segment.length), `doesn't match any`, pinyins)
+      break
     }
-  })
+    consumed += segment.length
+  }
+  return matches
 }
-
-// (() => {
-//   console.log(tolerant('爸爸', 'bà ba'))
-// })()
 
 const pinyin_equal = (nts1: NumericTone[], nts2: NumericTone[]) => {
   return nts1.every(([, num], i) => nts2[i][1] === num)
@@ -217,7 +216,7 @@ export const pinyin = (text: string, type: 'tone' | 'num') => {
     if (Array.isArray(pinyin)) {
       return pinyin[0]
     }
-    return pinyin
+    return pinyin || seg
   }).join(' ')
   if (type == 'tone') {
     return numeric_tones_binary(num, true, ' ')
@@ -261,3 +260,13 @@ export const chinese = (pinyin_str: string) => {
     return pinyin_str
   }).join('')
 }
+
+// (() => {
+//   start()
+//   const text = '汪峰老师！我是从小听着您的歌长大的~'
+//   const p = pinyin(text, 'tone')
+//   console.log(`pinyin('${text}', 'tone') =>`, p);
+//   // console.log(`hanzi.getPinyin('呱') =>`, hanzi.getPinyin('呱'));
+//   // console.log(`hanzi.getPinyin('呱呱') =>`, hanzi.getPinyin('呱呱'));
+//   console.log(`tolerant('${text}', p)`, tolerant(text, p))
+// })()

@@ -17,6 +17,7 @@
     "lodash": "^4.17.15"
   },
   "devDependencies": {
+    "ts-node": "^8.9.0",
     "typescript": "^3.8.2"
   },
   "repository": {
