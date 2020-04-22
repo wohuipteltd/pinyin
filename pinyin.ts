@@ -59,7 +59,7 @@ const reverted_tone = (() => {
 
 const TONE_PRIORITIES = ['a', 'e', 'o', ['iu', 'u'], ['ui', 'i'], 'i', 'u', 'v']
 const pinyin_separators = /[\s'-]+/
-const numeric_tone_pattern = /^([a-z]+)([1-5])$/
+const numeric_tone_pattern = /^([a-z]+)([1-5])$/i
 export type NumericTone = [string, number]
 
 const re_filter = (re: RegExp, text: string) => {
@@ -147,8 +147,7 @@ export const tolerant = (text: string, pinyin_str: string) => {
     }
     const [t, n] = numeric_tone(c)
     const [tone, num] = pinyin_array[i]
-    if (t === tone && (n === num || num === 5)) {
-      // console.log(`match`, c, [tone, num])
+    if (t.toLowerCase() === tone.toLowerCase() && (n === num || num === 5)) {
       i++
       return true
     }
@@ -161,6 +160,7 @@ export const tolerant = (text: string, pinyin_str: string) => {
         const array = re_filter(PinyinRegexp, item)
         for (const c of array) {
           if (try_consume(c)) {
+            // console.log(character_array[i - 1], `=`, c)
             matched_any = true
           }
         }
@@ -226,7 +226,7 @@ export const revert_numeric_tone = (tone_num: NumericTone) => {
 export const tonemark = (text: string) => numeric_tones(text).map(revert_numeric_tone).join(' ')
 
 const patch_hanzi_num = (hanzi_pinyin: string) => {
-  return hanzi_pinyin.toLocaleLowerCase().replace('u:', 'v')
+  return hanzi_pinyin.replace('u:', 'v')
 }
 
 function* pinyin_iterator(text: string) {
