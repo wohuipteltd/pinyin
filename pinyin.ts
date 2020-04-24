@@ -107,11 +107,7 @@ export const start = () => {
   console.timeEnd('pinyin_to_chinese')
 }
 
-const translate_tone = (str: string) => {
-  return str === 'r' ? 'er' : str
-}
-
-const _numeric_tone = (str: string): NumericTone => {
+const numeric_tone = (str: string): NumericTone => {
   const m = numeric_tone_pattern.exec(str)
   if (m) {
     return [m[1], Number(m[2])]
@@ -123,11 +119,6 @@ const _numeric_tone = (str: string): NumericTone => {
     }
   }
   return [str, 5]
-}
-
-const numeric_tone = (str: string): NumericTone => {
-  const [tone, num] = _numeric_tone(str)
-  return [translate_tone(tone), num]
 }
 
 export const numeric_tones = (pinyin_str: string): NumericTone[] => {  
@@ -339,9 +330,13 @@ export const chinese = (pinyin_str: string) => {
 // (() => {
 //   start()
 //   let text
-//   text = '独个儿'
+//   text = '独个儿二而尔'
 //   // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
-//   const p = pinyin(text, 'tone')
-//   console.log(`pinyin('${text}', 'tone') =>`, p);
-//   console.log(`tolerant('${text}', '${p}')`, tolerant(text, p))
+//   const num = pinyin(text, 'num')
+//   const tone = pinyin(text, 'tone')
+//   console.log(`pinyin('${text}', 'num') =>`, num);
+//   console.log(`pinyin('${text}', 'tone') =>`, tone);
+//   console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
+//   console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
+
 // })()
