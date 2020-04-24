@@ -63,7 +63,7 @@ const numeric_tone_pattern = /^([a-z]+)([1-5])$/i
 export type NumericTone = [string, number]
 
 const re_filter = (re: RegExp, text: string) => {
-  let result = []
+  let result: string[] = []
   text.replace(re, (match) => {
     result.push(match)
     return ''
@@ -107,13 +107,14 @@ export const start = () => {
   console.timeEnd('pinyin_to_chinese')
 }
 
-const numeric_tone = (str: string): NumericTone => {
+const translate_tone = (str: string) => {
+  return str === 'r' ? 'er' : str
+}
+
+const _numeric_tone = (str: string): NumericTone => {
   const m = numeric_tone_pattern.exec(str)
   if (m) {
     return [m[1], Number(m[2])]
-  }
-  if (str === 'r') {
-    return ['er', 5]
   }
   for (const key of Object.keys(vowels)) {
     if (str.indexOf(key) !== -1) {
@@ -122,6 +123,11 @@ const numeric_tone = (str: string): NumericTone => {
     }
   }
   return [str, 5]
+}
+
+const numeric_tone = (str: string): NumericTone => {
+  const [tone, num] = _numeric_tone(str)
+  return [translate_tone(tone), num]
 }
 
 export const numeric_tones = (pinyin_str: string): NumericTone[] => {  
@@ -153,18 +159,21 @@ export const tolerant = (text: string, pinyin_str: string) => {
     }
   }
 
+  let breaks_on: any = null
   for (const seg of pinyin_iterator(text)) {
     if (Array.isArray(seg)) {
       let matched_any = false
       for (const item of seg) {
         const array = re_filter(PinyinRegexp, item)
+        let j = 0
         for (const c of array) {
           if (try_consume(c)) {
-            // console.log(character_array[i - 1], `=`, c)
             matched_any = true
           }
+          j++
         }
         if (matched_any) {
+          breaks_on = array[j - 1]
           break
         }
       }
@@ -174,7 +183,7 @@ export const tolerant = (text: string, pinyin_str: string) => {
   }
   const matches = i == pinyin_array.length
   if (!matches) {
-    console.log(`doesn't match any`, pinyin_array[i])
+    console.log(breaks_on, `doesn't match`, pinyin_array[i])
   }
   return matches
 }
@@ -329,12 +338,10 @@ export const chinese = (pinyin_str: string) => {
 
 // (() => {
 //   start()
-//   // let text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
 //   let text
-//   text = 'XXXX年'
+//   text = '独个儿'
+//   // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
 //   const p = pinyin(text, 'tone')
 //   console.log(`pinyin('${text}', 'tone') =>`, p);
-//   // console.log(`hanzi.getPinyin('呱') =>`, hanzi.getPinyin('呱'));
-//   // console.log(`hanzi.getPinyin('呱呱') =>`, hanzi.getPinyin('呱呱'));
-//   console.log(`tolerant('${text}', p)`, tolerant(text, p))
+//   console.log(`tolerant('${text}', '${p}')`, tolerant(text, p))
 // })()
