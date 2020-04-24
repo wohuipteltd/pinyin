@@ -107,18 +107,25 @@ export const start = () => {
   console.timeEnd('pinyin_to_chinese')
 }
 
+const standardized_tone = (tone: string, num: number): NumericTone => {
+  if (tone === 'er' && num === 5) {
+    tone = 'r'
+  }
+  return [tone, num]
+}
+
 const numeric_tone = (str: string): NumericTone => {
   const m = numeric_tone_pattern.exec(str)
   if (m) {
-    return [m[1], Number(m[2])]
+    return standardized_tone(m[1], Number(m[2]))
   }
   for (const key of Object.keys(vowels)) {
     if (str.indexOf(key) !== -1) {
       const [tone, num] = vowels[key]
-      return [str.replace(key, tone), num]
+      return standardized_tone(str.replace(key, tone), num)
     }
   }
-  return [str, 5]
+  return standardized_tone(str, 5)
 }
 
 export const numeric_tones = (pinyin_str: string): NumericTone[] => {  
@@ -322,7 +329,7 @@ export const numeric_tones_binary = (pinyin_str: string, binary: boolean, separa
   }).filter(x => x).join(separator)
 }
 
-export const chinese = (pinyin_str: string) => {
+export function chinese(pinyin_str: string) {
   if (Object.keys(pinyin_to_chinese_dict).length === 0) {
     start()
   }
