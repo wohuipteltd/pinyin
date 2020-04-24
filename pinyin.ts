@@ -125,6 +125,18 @@ export const numeric_tones = (pinyin_str: string): NumericTone[] => {
   return pinyin_str.split(pinyin_separators).map(numeric_tone)
 }
 
+const same_tone = (a: string, b: string) => {
+  b = b.toLowerCase()
+  a = a.toLowerCase()
+  if (b === 'er') {
+    b = 'r'
+  }
+  if (b === 'ng' || b == 'n') {
+    b = 'en'
+  }
+  return a === b
+}
+
 export const tolerant = (text: string, pinyin_str: string) => {
   if (Object.keys(pinyin_to_chinese_dict).length === 0) {
     start()
@@ -144,7 +156,7 @@ export const tolerant = (text: string, pinyin_str: string) => {
     }
     const [t, n] = numeric_tone(c)
     const [tone, num] = pinyin_array[i]
-    if (t.toLowerCase() === tone.toLowerCase() && (n === num || num === 5)) {
+    if (same_tone(t, tone) && (n === num || num === 5)) {
       i++
       return true
     }
