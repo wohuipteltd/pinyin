@@ -71,9 +71,8 @@ const re_filter = (re: RegExp, text: string) => {
   return result
 }
 
-export const start = () => {
+const start = () => {
   console.time('pinyin_to_chinese')
-  hanzi.start()
   let i = 1
   while (true) {
     const res = hanzi.getCharacterInFrequencyListByPosition(i++)
@@ -145,8 +144,8 @@ const same_tone = (a: string, b: string) => {
 }
 
 export const tolerant = (text: string, pinyin_str: string) => {
-  if (Object.keys(pinyin_to_chinese_dict).length === 0) {
-    start()
+  if (!hanzi.ifComponentExists('一')) {
+    hanzi.start()
   }
   if (text === pinyin_str) return true
   const character_array = re_filter(ChineseRegexp, text)
@@ -294,6 +293,9 @@ function* pinyin_iterator(text: string) {
 }
 
 export function pinyin(text: string, type: 'tone' | 'num') {
+  if (!hanzi.ifComponentExists('一')) {
+    hanzi.start()
+  }
   const result = []
   for (const seg of pinyin_iterator(text)) {
     if (Array.isArray(seg)) {
