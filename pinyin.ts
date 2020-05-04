@@ -349,16 +349,16 @@ export function chinese(pinyin_str: string) {
   }).join('')
 }
 
-(() => {
-  start()
-  let text
-  text = '耳'
-  // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
-  const num = pinyin(text, 'num')
-  const tone = pinyin(text, 'tone')
-  console.log(`pinyin('${text}', 'num') =>`, num);
-  console.log(`pinyin('${text}', 'tone') =>`, tone);
-  console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
-  console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
+// (() => {
+//   start()
+//   let text
+//   text = '耳'
+//   // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
+//   const num = pinyin(text, 'num')
+//   const tone = pinyin(text, 'tone')
+//   console.log(`pinyin('${text}', 'num') =>`, num);
+//   console.log(`pinyin('${text}', 'tone') =>`, tone);
+//   console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
+//   console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
 
-})()
+// })()
