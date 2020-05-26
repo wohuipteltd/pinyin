@@ -171,8 +171,6 @@ export const tolerant = (text: string, pinyin_str: string) => {
 
   let breaks_on: any = null
   for (const seg of pinyin_iterator(text)) {
-    console.log(seg);
-    
     if (Array.isArray(seg)) {
       let matched_any = false
       for (const item of seg) {
@@ -362,13 +360,13 @@ export function chinese(pinyin_str: string) {
 // (() => {
 //   start()
 //   let text
-//   text = '钥'
+//   text = '约'
 //   // hanzi.start()
-//   // console.log(hanziPinyin(text));
+//   console.log(hanziPinyin(text));
 //   // console.log(hanzi.definitionLookup(text));
 //   // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
-//   const num = pinyin(text, 'num')
-//   const tone = pinyin(text, 'tone')
+//   const num = 'yue'//pinyin(text, 'num')
+//   const tone = 'yuē'
 //   console.log(`pinyin('${text}', 'num') =>`, num);
 //   console.log(`pinyin('${text}', 'tone') =>`, tone);
 //   console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
