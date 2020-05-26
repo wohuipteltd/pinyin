@@ -249,7 +249,8 @@ const patch_hanzi_num = (hanzi_pinyin: string) => {
 }
 
 const patch = {
-  '钥': ['yao4']
+  '钥': ['yao4'],
+  '匙': ['chi2', 'shi5']
 }
 
 function hanziPinyin(text: string) {
@@ -360,15 +361,15 @@ export function chinese(pinyin_str: string) {
 // (() => {
 //   start()
 //   let text
-//   text = '约'
-//   // hanzi.start()
-//   console.log(hanziPinyin(text));
-//   // console.log(hanzi.definitionLookup(text));
-//   // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
-//   const num = 'yue'//pinyin(text, 'num')
-//   const tone = 'yuē'
-//   console.log(`pinyin('${text}', 'num') =>`, num);
-//   console.log(`pinyin('${text}', 'tone') =>`, tone);
-//   console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
-//   console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
+//   text = '匙'
+//   hanzi.start()
+  // console.log(hanziPinyin(text));
+  // console.log(hanzi.definitionLookup(text));
+  // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
+  // const num = 'yue'//pinyin(text, 'num')
+  // const tone = 'yuē'
+  // console.log(`pinyin('${text}', 'num') =>`, num);
+  // console.log(`pinyin('${text}', 'tone') =>`, tone);
+  // console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
+  // console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
 // })()
