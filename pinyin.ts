@@ -171,6 +171,8 @@ export const tolerant = (text: string, pinyin_str: string) => {
 
   let breaks_on: any = null
   for (const seg of pinyin_iterator(text)) {
+    console.log(seg);
+    
     if (Array.isArray(seg)) {
       let matched_any = false
       for (const item of seg) {
@@ -248,6 +250,14 @@ const patch_hanzi_num = (hanzi_pinyin: string) => {
   return hanzi_pinyin.replace('u:', 'v')
 }
 
+const patch = {
+  '钥': ['yao4']
+}
+
+function hanziPinyin(text: string) {
+  return patch[text] || hanzi.getPinyin(text)
+}
+
 function* pinyin_iterator(text: string) {
   if (!text) return text
 
@@ -280,7 +290,7 @@ function* pinyin_iterator(text: string) {
       yield group
     } else {
       for (const seg of hanzi.segment(group)) {
-        const pinyin = hanzi.getPinyin(seg)
+        const pinyin = hanziPinyin(seg)
         if (Array.isArray(pinyin)) {
           yield pinyin.map(patch_hanzi_num)
         } else if (pinyin) {
@@ -352,7 +362,10 @@ export function chinese(pinyin_str: string) {
 // (() => {
 //   start()
 //   let text
-//   text = '耳'
+//   text = '钥'
+//   // hanzi.start()
+//   // console.log(hanziPinyin(text));
+//   // console.log(hanzi.definitionLookup(text));
 //   // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
 //   const num = pinyin(text, 'num')
 //   const tone = pinyin(text, 'tone')
@@ -360,5 +373,4 @@ export function chinese(pinyin_str: string) {
 //   console.log(`pinyin('${text}', 'tone') =>`, tone);
 //   console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
 //   console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
-
 // })()
