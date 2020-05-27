@@ -314,7 +314,7 @@ export function pinyin(text: string, type: 'tone' | 'num') {
       result.push(seg)
     }
   }
-  const num = result.join(' ')
+  const num = result.join(' ').toLowerCase()
   if (type == 'tone') {
     return numeric_tones_binary(num, true, ' ')
   }
