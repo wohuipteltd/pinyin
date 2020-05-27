@@ -163,7 +163,7 @@ export const tolerant = (text: string, pinyin_str: string) => {
     }
     const [t, n] = numeric_tone(c)
     const [tone, num] = pinyin_array[i]
-    if (same_tone(t, tone) && (n === num || num === 5)) {
+    if (same_tone(t, tone)) {
       i++
       return true
     }
@@ -358,18 +358,18 @@ export function chinese(pinyin_str: string) {
   }).join('')
 }
 
-// (() => {
+(() => {
 //   start()
 //   let text
-//   text = '匙'
-//   hanzi.start()
-  // console.log(hanziPinyin(text));
-  // console.log(hanzi.definitionLookup(text));
-  // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
-  // const num = 'yue'//pinyin(text, 'num')
-  // const tone = 'yuē'
-  // console.log(`pinyin('${text}', 'num') =>`, num);
-  // console.log(`pinyin('${text}', 'tone') =>`, tone);
-  // console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
-  // console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
-// })()
+//   text = '喜欢'
+// //   hanzi.start()
+//   // console.log(hanziPinyin(text));
+//   // console.log(hanzi.definitionLookup(text));
+//   // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
+//   // const num = 'yue'//pinyin(text, 'num')
+//   const tone = 'xǐ huān'//'yuē'
+//   // console.log(`pinyin('${text}', 'num') =>`, num);
+//   console.log(`pinyin('${text}', 'tone') =>`, tone);
+//   // console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
+//   console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
+})()
