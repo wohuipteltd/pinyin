@@ -3,8 +3,8 @@ import * as _ from 'lodash'
 import * as hanzi from 'hanzi'
 
 const PinyinRegexp = /([A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
-const ChineseRegexp = /([\u4e00-\u9fa5]|[A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
-const NoneChineseRegexp = /([^\u4e00-\u9fa5]+)/g
+const ChineseRegexp = /([\u3400-\u9fa5]|[A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
+const NoneChineseRegexp = /([^\u3400-\u9fa5]+)/g
 
 const vowels = {
   'üē': ['ve', 1],
@@ -242,7 +242,11 @@ export const revert_numeric_tone = (tone_num: NumericTone) => {
   return tone
 }
 
-export const tonemark = (text: string) => numeric_tones(text).map(revert_numeric_tone).join(' ')
+export const tone2num = (text: string) => {
+  return numeric_tones(text).map(([tone, num]) => {
+    return tone + num
+  }).join(' ')
+}
 
 const patch_hanzi_num = (hanzi_pinyin: string) => {
   return hanzi_pinyin.replace('u:', 'v')
@@ -359,15 +363,16 @@ export function chinese(pinyin_str: string) {
 }
 
 (() => {
-//   start()
-//   let text
-//   text = '喜欢'
-// //   hanzi.start()
+  start()
+  let text
+  text = '喜欢'
 //   // console.log(hanziPinyin(text));
 //   // console.log(hanzi.definitionLookup(text));
 //   // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
 //   // const num = 'yue'//pinyin(text, 'num')
-//   const tone = 'xǐ huān'//'yuē'
+  const tone = 'xǐ huān'//'yuē'
+  console.log(tone2num(tone));
+  
 //   // console.log(`pinyin('${text}', 'num') =>`, num);
 //   console.log(`pinyin('${text}', 'tone') =>`, tone);
 //   // console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
