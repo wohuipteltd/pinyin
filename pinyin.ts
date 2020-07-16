@@ -254,7 +254,8 @@ const patch_hanzi_num = (hanzi_pinyin: string) => {
 
 const patch = {
   '钥': ['yao4'],
-  '匙': ['chi2', 'shi5']
+  '匙': ['chi2', 'shi5'],
+  '壳': ['qiao4', 'ke2']
 }
 
 function hanziPinyin(text: string) {
