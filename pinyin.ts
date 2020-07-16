@@ -1,5 +1,4 @@
 const pinyin_to_chinese_dict: { [key: string]: string[] } = {}
-import * as _ from 'lodash'
 import * as hanzi from 'hanzi'
 
 const PinyinRegexp = /([A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
@@ -202,7 +201,7 @@ const pinyin_equal = (nts1: NumericTone[], nts2: NumericTone[]) => {
   return nts1.every(([, num], i) => nts2[i][1] === num)
 }
 
-export const random_tones = (tone_nums: NumericTone[], expected_length: number): NumericTone[][] => {
+export const random_tones = (tone_nums: NumericTone[], expected_length: number, sample_fn: <N>(list: N[]) => N): NumericTone[][] => {
   if (Object.keys(pinyin_to_chinese_dict).length === 0) {
     start()
   }
@@ -222,7 +221,7 @@ export const random_tones = (tone_nums: NumericTone[], expected_length: number):
   
   const results: NumericTone[][] = [tone_nums]
   while (results.length - 1 < expected_length) {
-    const random = possibilities.map(([tone, nums]): NumericTone => [tone, _.sample(nums)])
+    const random = possibilities.map(([tone, nums]): NumericTone => [tone, sample_fn(nums)])
     if (results.some(found => pinyin_equal(found, random))) continue
     results.push(random)
   }
