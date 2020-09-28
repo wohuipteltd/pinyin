@@ -5,7 +5,9 @@ const PinyinRegexp = /([A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜ
 const ChineseRegexp = /([\u3400-\u9fa5]|[A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
 const NoneChineseRegexp = /([^\u3400-\u9fa5]+)/g
 
-const vowels = {
+export type NumericTone = [string, number]
+
+const vowels: {[key: string]: NumericTone} = {
   'üē': ['ve', 1],
   'üé': ['ve', 2],
   'üě': ['ve', 3],
@@ -44,22 +46,23 @@ const vowels = {
 
 const reverted_tone = (() => {
   const ret = {}
-  Object.keys(vowels).map(key => vowels[key])
   Object.keys(vowels).forEach((key) => {
     const [no_tone, num] = vowels[key]
     if (!ret[num]) {
       ret[num] = {}
     }
     ret[num][no_tone] = key
+    if (no_tone.includes('v')) {
+      ret[num][no_tone.replace('v', 'u:')] = key
+    }
   })
-  ret[5] = { ue: 'üe', a: 'a', e: 'e', i: 'i', o: 'o', u: 'u', v: 'ü' }
+  ret[5] = { ue: 'üe', a: 'a', e: 'e', i: 'i', o: 'o', u: 'u', v: 'ü', 'u:e': 'üe', 'u:': 'ü' }
   return ret
 })()
 
-const TONE_PRIORITIES = ['a', 'e', 'o', ['iu', 'u'], ['ui', 'i'], 'i', 'u', 'v']
+const TONE_PRIORITIES = ['a', 'u:e', 'ue', 've', 'e', 'o', ['iu', 'u'], ['ui', 'i'], 'i', 'u:', 'u', 'v']
 const pinyin_separators = /[\s'-]+/
 const numeric_tone_pattern = /^([a-z]+)([1-5])$/i
-export type NumericTone = [string, number]
 
 const re_filter = (re: RegExp, text: string) => {
   let result: string[] = []
@@ -106,8 +109,8 @@ const start = () => {
 }
 
 const standardized_tone = (tone: string, num: number): NumericTone => {
-  if (tone === 'er' && num === 5) {
-    tone = 'r'
+  if (tone === 'r' && num === 5) {
+    tone = 'er'
   }
   return [tone, num]
 }
