@@ -178,7 +178,9 @@ export const tolerant = (text: string, pinyin_str: string) => {
       for (const item of seg) {
         const array = re_filter(PinyinRegexp, item)
         let j = 0
+        console.log(`try_consume("${array}")`)
         for (const c of array) {
+          
           if (try_consume(c)) {
             matched_any = true
           }
@@ -190,6 +192,7 @@ export const tolerant = (text: string, pinyin_str: string) => {
         }
       }
     } else {
+      console.log(`try_consume("${seg}")`)
       try_consume(seg)
     }
   }
@@ -256,6 +259,7 @@ const patch_hanzi_num = (hanzi_pinyin: string) => {
 
 const patch = {
   '钥': ['yao4'],
+  '鹖': ['he2'],
   '匙': ['chi2', 'shi5'],
   '壳': ['qiao4', 'ke2']
 }
@@ -297,6 +301,7 @@ function* pinyin_iterator(text: string) {
     } else {
       for (const seg of hanzi.segment(group)) {
         const pinyin = hanziPinyin(seg)
+        console.log(`hanziPinyin(${seg}) = ${pinyin}`);
         if (Array.isArray(pinyin)) {
           yield pinyin.map(patch_hanzi_num)
         } else if (pinyin) {
@@ -366,18 +371,19 @@ export function chinese(pinyin_str: string) {
 }
 
 // (() => {
-//   start()
-//   let text
-//   text = '喜欢'
+  // console.log(numeric_tones('nǚ rén').map(([tone,]) => tone).join(' '));
+  // console.log(pinyin('鹖', 'tone'));
+  // let text: string
+  // text = '爪子'
 //   // console.log(hanziPinyin(text));
 //   // console.log(hanzi.definitionLookup(text));
 //   // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
-//   // const num = 'yue'//pinyin(text, 'num')
+  // const num = 'zhao3 zi1'
   // const tone = 'xǐ huān'//'yuē'
   // console.log(tone2num(tone));
   
 //   // console.log(`pinyin('${text}', 'num') =>`, num);
 //   console.log(`pinyin('${text}', 'tone') =>`, tone);
-//   // console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
-//   console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
+  // console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
+  // console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
 // })()
