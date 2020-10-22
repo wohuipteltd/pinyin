@@ -301,7 +301,7 @@ function* pinyin_iterator(text: string) {
     } else {
       for (const seg of hanzi.segment(group)) {
         const pinyin = hanziPinyin(seg)
-        console.log(`hanziPinyin(${seg}) = ${pinyin}`);
+        // console.log(`hanziPinyin(${seg}) = ${pinyin}`);
         if (Array.isArray(pinyin)) {
           yield pinyin.map(patch_hanzi_num)
         } else if (pinyin) {
