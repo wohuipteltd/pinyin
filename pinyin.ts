@@ -60,7 +60,7 @@ const reverted_tone = (() => {
   return ret
 })()
 
-const TONE_PRIORITIES = ['a', 'u:e', 'ue', 've', 'e', 'o', ['iu', 'u'], ['ui', 'i'], 'i', 'u:', 'u', 'v']
+const TONE_PRIORITIES = ['a', 'ue', 've', 'e', 'o', ['iu', 'u'], ['ui', 'i'], 'i', 'u', 'v']
 const pinyin_separators = /[\s'-]+/
 const numeric_tone_pattern = /^([a-z]+)([1-5])$/i
 
@@ -116,7 +116,7 @@ const standardized_tone = (tone: string, num: number): NumericTone => {
 }
 
 const numeric_tone = (str: string): NumericTone => {
-  const m = numeric_tone_pattern.exec(str)
+  const m = numeric_tone_pattern.exec(str.replace(/(u:|ü)/g, 'v'))
   if (m) {
     return standardized_tone(m[1], Number(m[2]))
   }
@@ -370,8 +370,12 @@ export function chinese(pinyin_str: string) {
   }).join('')
 }
 
-// (() => {
+(() => {
   // console.log(numeric_tones('nǚ rén').map(([tone,]) => tone).join(' '));
+  // console.log(numeric_tones_binary('nu:3', true, ' '));
+  // console.log(numeric_tones_binary('nu:e4', true, ' '));
+  // console.log(numeric_tones_binary('sūn nü3', true, ' '));
+  
   // console.log(pinyin('鹖', 'tone'));
   // let text: string
   // text = '爪子'
@@ -386,4 +390,4 @@ export function chinese(pinyin_str: string) {
 //   console.log(`pinyin('${text}', 'tone') =>`, tone);
   // console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
   // console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
-// })()
+})()
