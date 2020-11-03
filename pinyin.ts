@@ -112,15 +112,15 @@ const start = () => {
   console.timeEnd('pinyin_to_chinese')
 }
 
-const JQXv = /(?<=^[jqx])v/
-const JQXu = /(?<=^[jqx])u/
+const JQXYv = /(?<=^[jqxyJQXY])v/
+const JQXYu = /(?<=^[jqxyJQXY])u/
 const ReU = /(u:|ü)/
 
 const standardized_tone = (tone: string, num: number): NumericTone => {
   if (tone === 'r' && num === 5) {
     tone = 'er'
   }
-  tone = tone.replace(JQXv, 'u')
+  tone = tone.replace(JQXYv, 'u')
   return [tone, num]
 }
 
