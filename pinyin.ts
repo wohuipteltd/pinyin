@@ -12,6 +12,10 @@ const vowels: {[key: string]: NumericTone} = {
   'üé': ['ve', 2],
   'üě': ['ve', 3],
   'üè': ['ve', 4],
+  'uē': ['ve', 1],
+  'ué': ['ue', 2],
+  'uě': ['ue', 3],
+  'uè': ['ue', 4],
   'ā': ['a', 1],
   'ē': ['e', 1],
   'ī': ['i', 1],
@@ -108,15 +112,20 @@ const start = () => {
   console.timeEnd('pinyin_to_chinese')
 }
 
+const JQXv = /(?<=^[jqx])v/
+const JQXu = /(?<=^[jqx])u/
+const ReU = /(u:|ü)/
+
 const standardized_tone = (tone: string, num: number): NumericTone => {
   if (tone === 'r' && num === 5) {
     tone = 'er'
   }
+  tone = tone.replace(JQXv, 'u')
   return [tone, num]
 }
 
 const numeric_tone = (str: string): NumericTone => {
-  const m = numeric_tone_pattern.exec(str.replace(/(u:|ü)/g, 'v'))
+  const m = numeric_tone_pattern.exec(str.replace(ReU, 'v'))
   if (m) {
     return standardized_tone(m[1], Number(m[2]))
   }
@@ -336,6 +345,7 @@ export function pinyin(text: string, type: 'tone' | 'num') {
 const revert_numeric_tone_regexp = (tone_num: NumericTone) => {
   /*有ɑ先标ɑ；  无ɑ有e或o，则先标e或o； 只有i或u/ü，则标i或u/ü；  i、u在一起，则标后一个（指韵母iu，ui）*/
   const [tone, num] = tone_num
+
   for (const group of TONE_PRIORITIES) {
     const sound = Array.isArray(group) ? group[0] : group;
     if (tone.indexOf(sound) >= 0) {
@@ -374,7 +384,7 @@ export function chinese(pinyin_str: string) {
   // console.log(numeric_tones('nǚ rén').map(([tone,]) => tone).join(' '));
   // console.log(numeric_tones_binary('nu:3', true, ' '));
   // console.log(numeric_tones_binary('nu:e4', true, ' '));
-  // console.log(numeric_tones_binary('sūn nü3', true, ' '));
+  // console.log(numeric_tones_binary('Ai1 ji2 gu3 wu4 xu:e2', true, ' '));
   
   // console.log(pinyin('鹖', 'tone'));
   // let text: string
