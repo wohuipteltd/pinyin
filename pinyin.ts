@@ -12,7 +12,7 @@ const vowels: {[key: string]: NumericTone} = {
   'üé': ['ve', 2],
   'üě': ['ve', 3],
   'üè': ['ve', 4],
-  'uē': ['ve', 1],
+  'uē': ['ue', 1],
   'ué': ['ue', 2],
   'uě': ['ue', 3],
   'uè': ['ue', 4],
@@ -384,7 +384,7 @@ export function chinese(pinyin_str: string) {
   // console.log(numeric_tones('nǚ rén').map(([tone,]) => tone).join(' '));
   // console.log(numeric_tones_binary('nu:3', true, ' '));
   // console.log(numeric_tones_binary('nu:e4', true, ' '));
-  // console.log(numeric_tones_binary('Ai1 ji2 gu3 wu4 xu:e2', true, ' '));
+  // console.log(numeric_tones_binary('shi1 yue1', true, ' '));
   
   // console.log(pinyin('鹖', 'tone'));
   // let text: string
