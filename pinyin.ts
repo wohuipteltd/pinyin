@@ -248,9 +248,9 @@ export const revert_numeric_tone = (tone_num: NumericTone) => {
   const [tone, num] = tone_num
   for (const group of TONE_PRIORITIES) {
     const sound = Array.isArray(group) ? group[0] : group
-    if (tone.indexOf(sound) >= 0) {
+    if (tone.toLowerCase().indexOf(sound) >= 0) {
       const replacing = Array.isArray(group) ? group[1] : group
-      return tone.replace(replacing, reverted_tone[num][replacing])
+      return tone.replace(new RegExp(replacing, 'i'), reverted_tone[num][replacing])
     }
   }
   return tone
@@ -267,6 +267,7 @@ const patch_hanzi_num = (hanzi_pinyin: string) => {
 }
 
 const patch = {
+  '只': ['zhi1', 'zhi3'],
   '钥': ['yao4'],
   '鹖': ['he2'],
   '匙': ['chi2', 'shi5'],
@@ -382,11 +383,13 @@ export function chinese(pinyin_str: string) {
 
 (() => {
   // console.log(numeric_tones('nǚ rén').map(([tone,]) => tone).join(' '));
-  // console.log(numeric_tones_binary('nu:3', true, ' '));
-  // console.log(numeric_tones_binary('nu:e4', true, ' '));
-  // console.log(numeric_tones_binary('shi1 yue1', true, ' '));
+  // console.log(pinyin('nu:3', 'tone'));
+  // console.log(pinyin('nv3', 'tone'));
+  // console.log(pinyin('女', 'tone'));
+  // console.log((pinyin('只', 'tone')));
   
-  // console.log(pinyin('鹖', 'tone'));
+  // console.log(pinyin('你', 'num'));
+  // console.log(tone2num('nǐ'));
   // let text: string
   // text = '爪子'
 //   // console.log(hanziPinyin(text));
