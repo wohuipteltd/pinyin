@@ -365,6 +365,9 @@ export const numeric_tones_binary = (pinyin_str: string, binary: boolean, separa
 }
 
 export function chinese(pinyin_str: string) {
+  if (!hanzi.ifComponentExists('一')) {
+    hanzi.start()
+  }
   if (Object.keys(pinyin_to_chinese_dict).length === 0) {
     start()
   }
@@ -382,12 +385,15 @@ export function chinese(pinyin_str: string) {
 }
 
 (() => {
+  // console.log(chinese('měi guo2 fu4 gong1 yóu xing2'))
+
   // console.log(numeric_tones('nǚ rén').map(([tone,]) => tone).join(' '));
   // console.log(pinyin('nu:3', 'tone'));
   // console.log(pinyin('nv3', 'tone'));
   // console.log(pinyin('女', 'tone'));
-  // console.log((pinyin('只', 'tone')));
-  
+  // console.log((pinyin('yi1 zhi1 mao1', 'num')));
+  // console.log((pinyin('一只猫', 'num')));
+  // console.log((tone2num(tone2num('yī zhī māo'))));
   // console.log(pinyin('你', 'num'));
   // console.log(tone2num('nǐ'));
   // let text: string
