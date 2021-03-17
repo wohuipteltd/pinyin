@@ -35,11 +35,13 @@ const vowels: {[key: string]: NumericTone} = {
   'ǒ': ['o', 3],
   'ǔ': ['u', 3],
   'ǚ': ['v', 3],
+  'ǚ': ['v', 3],
   'à': ['a', 4],
   'è': ['e', 4],
   'ì': ['i', 4],
   'ò': ['o', 4],
   'ù': ['u', 4],
+  'ǜ': ['v', 4],
   'ǜ': ['v', 4],
   'ńg': ['en', 2],
   'ňg': ['en', 3],
@@ -384,9 +386,9 @@ export function chinese(pinyin_str: string) {
 }
 
 (() => {
-  // console.log(numeric_tone('nǜ'));
+  // console.log(numeric_tone('nǚ'));
   
-  // console.log(chinese('zuǒ bian zhè ge kàn bào zhì de nǚ hái zi shì nǐ jiě jie ma'))
+  // console.log(chinese('zuǒ bian zhè ge kàn bào zhì de nǚ hái zi shì nǐ jiě jie ma'))
   // console.log(numeric_tones('nǚ rén').map(([tone,]) => tone).join(' '));
   // console.log(pinyin('nu:3', 'tone'));
   // console.log(pinyin('nv3', 'tone'));
