@@ -90,9 +90,10 @@ const start = () => {
     if (!def) {
       continue
     }
-    for (const tone_num of pinyin.split('/')) {
+    const tone_nums = pinyin.split('/')
+    if (tone_nums.length > 1) continue
+    for (const tone_num of tone_nums) {
       const [tone, num] = numeric_tone(tone_num)
-
       if (!pinyin_to_chinese_dict[tone]) {
         pinyin_to_chinese_dict[tone] = []
       }
@@ -101,9 +102,6 @@ const start = () => {
       } else {
         const f_old = hanzi.getCharacterFrequency(pinyin_to_chinese_dict[tone][num])
         if (pinyin === def.pinyin && f_old.pinyin.split('/').length > pinyin.split('/').length || Number(f_old.count) < Number(count)) {
-          // if (tone == 'fa' && num == 1) {
-          //   console.log('replacing', f_old, { character, count, pinyin }, def)
-          // }
           pinyin_to_chinese_dict[tone][num] = character
         }
       }
@@ -385,8 +383,7 @@ export function chinese(pinyin_str: string) {
 }
 
 (() => {
-  // console.log(chinese('měi guo2 fu4 gong1 yóu xing2'))
-
+  // console.log(chinese('jiě jie ma'))
   // console.log(numeric_tones('nǚ rén').map(([tone,]) => tone).join(' '));
   // console.log(pinyin('nu:3', 'tone'));
   // console.log(pinyin('nv3', 'tone'));
