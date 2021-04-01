@@ -6,7 +6,8 @@ const NoneChineseRegexp = /([^\u3400-\u9fa5]+)/g
 
 export type NumericTone = [string, number]
 
-const pinyin_to_chinese_dict: { [key: string]: { pinyin: number, character: string, count: number }[] } = {}
+type ChineseCharacter = { pinyin: number, character: string, count: number }
+const pinyin_to_chinese_dict: { [key: string]: ChineseCharacter[] } = {}
 
 const vowels: {[key: string]: NumericTone} = {
   'üē': ['ve', 1],
@@ -80,19 +81,37 @@ const re_filter = (re: RegExp, text: string) => {
   return result
 }
 
-const start = () => {
+const swizzleDictionary = {
+  '饹': null,
+  '价': 'jia4'
+}
+
+const lookup = (i: number): -1 | { character: string, count: number, pinyin: string } | null => {
+  const res = hanzi.getCharacterInFrequencyListByPosition(i++)
+  if (res == 'Character not found') {
+    return -1
+  }
+  const { character, count, pinyin } = res
+  if (!hanzi.definitionLookup(character, 's')) {
+    return null
+  }
+  const swizzle = swizzleDictionary[character]
+  if (swizzle === null) {
+    return null
+  } else if (swizzle) {
+    return { character, pinyin: swizzle, count }
+  }
+  return { character, pinyin, count }
+}
+
+const start = (): void => {
   console.time('pinyin_to_chinese')
   let i = 1
   while (true) {
-    const res = hanzi.getCharacterInFrequencyListByPosition(i++)
-    if (res == 'Character not found') {
-      break
-    }
+    const res = lookup(i++)
+    if (res === -1) break
+    if (res === null) continue
     const { character, count, pinyin } = res
-    const def = hanzi.definitionLookup(character, 's')
-    if (!def) {
-      continue
-    }
     const tone_nums = pinyin.split('/')
     for (const tone_num of tone_nums) {
       const [tone, num] = numeric_tone(tone_num)
@@ -373,8 +392,28 @@ export function chinese(pinyin_str: string) {
   return numeric_tones(pinyin_str).map(([tone, num]) => {
     if (pinyin_to_chinese_dict[tone]) {
       let candidate = pinyin_to_chinese_dict[tone][num]
-      if (candidate && (num !== 5 || candidate.pinyin === 1)) {
-        return candidate.character
+      if (candidate) {
+        if (candidate.pinyin === 1) {
+          return candidate.character
+        }
+        if (num === 5) {
+          let max_candidate: ChineseCharacter
+          let max_count: number = -1
+          for (const i of [1, 2, 3, 4, 5]) {
+            const candidate = pinyin_to_chinese_dict[tone][i]
+            if (candidate) {
+              if (candidate.count > max_count) {
+                max_count = candidate.count
+                max_candidate = candidate
+              }
+            }
+          }
+          if (max_candidate) {
+            return max_candidate.character
+          }
+        } else {
+          return candidate.character
+        }
       }
       for (const i of [1, 2, 3, 4, 5]) {
         candidate = pinyin_to_chinese_dict[tone][i]
@@ -385,10 +424,10 @@ export function chinese(pinyin_str: string) {
   }).join('')
 }
 
-(() => {
+if (process.argv[1].includes(__filename)) {
   // console.log(numeric_tone('nǚ'));
-  
-  // console.log(chinese('zuǒ bian zhè ge kàn bào zhì de nǚ hái zi shì nǐ jiě jie ma'))
+  console.log(chinese('shou3 ma2 le'))
+  console.log(chinese('zuǒ bian zhè ge kàn bào zhì de nǚ hái zi shì nǐ jiě jie ma'))
   // console.log(numeric_tones('nǚ rén').map(([tone,]) => tone).join(' '));
   // console.log(pinyin('nu:3', 'tone'));
   // console.log(pinyin('nv3', 'tone'));
@@ -411,4 +450,4 @@ export function chinese(pinyin_str: string) {
 //   console.log(`pinyin('${text}', 'tone') =>`, tone);
   // console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
   // console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
-})()
+}
