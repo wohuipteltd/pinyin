@@ -82,8 +82,13 @@ const re_filter = (re: RegExp, text: string) => {
 }
 
 const swizzleDictionary = {
-  '饹': null,
-  '价': 'jia4'
+  '饹': 'ge1',
+  '价': 'jia4',
+  '只': 'zhi1/zhi3',
+  '钥': 'yao4',
+  '鹖': 'he2',
+  '匙': 'chi2/shi5',
+  '壳': 'qiao4/ke2'
 }
 
 const lookup = (i: number): -1 | { character: string, count: number, pinyin: string } | null => {
@@ -181,6 +186,8 @@ export const tolerant = (text: string, pinyin_str: string) => {
   const character_array = re_filter(ChineseRegexp, text)
   if (character_array.length === 0) return true
   const pinyin_array = re_filter(PinyinRegexp, pinyin_str).map(numeric_tone)
+  console.log(pinyin_array);
+  
   if (pinyin_array.length !== character_array.length) {
     console.log(`length doesn't match`, pinyin_array, character_array)
     return false
@@ -284,16 +291,8 @@ const patch_hanzi_num = (hanzi_pinyin: string) => {
   return hanzi_pinyin.replace('u:', 'v')
 }
 
-const patch = {
-  '只': ['zhi1', 'zhi3'],
-  '钥': ['yao4'],
-  '鹖': ['he2'],
-  '匙': ['chi2', 'shi5'],
-  '壳': ['qiao4', 'ke2']
-}
-
 function hanziPinyin(text: string) {
-  return patch[text] || hanzi.getPinyin(text)
+  return swizzleDictionary[text]?.split('/') || hanzi.getPinyin(text)
 }
 
 function* pinyin_iterator(text: string) {
@@ -422,32 +421,4 @@ export function chinese(pinyin_str: string) {
     }
     return pinyin_str
   }).join('')
-}
-
-if (process.argv[1].includes(__filename)) {
-  // console.log(numeric_tone('nǚ'));
-  console.log(chinese('shou3 ma2 le'))
-  console.log(chinese('zuǒ bian zhè ge kàn bào zhì de nǚ hái zi shì nǐ jiě jie ma'))
-  // console.log(numeric_tones('nǚ rén').map(([tone,]) => tone).join(' '));
-  // console.log(pinyin('nu:3', 'tone'));
-  // console.log(pinyin('nv3', 'tone'));
-  // console.log(pinyin('女', 'tone'));
-  // console.log((pinyin('yi1 zhi1 mao1', 'num')));
-  // console.log((pinyin('一只猫', 'num')));
-  // console.log((tone2num(tone2num('yī zhī māo'))));
-  // console.log(pinyin('你', 'num'));
-  // console.log(tone2num('nǐ'));
-  // let text: string
-  // text = '爪子'
-//   // console.log(hanziPinyin(text));
-//   // console.log(hanzi.definitionLookup(text));
-//   // text = 'XXXX年！汪峰老师！我是从小听着您的歌长大的~'
-  // const num = 'zhao3 zi1'
-  // const tone = 'xǐ huān'//'yuē'
-  // console.log(tone2num(tone));
-  
-//   // console.log(`pinyin('${text}', 'num') =>`, num);
-//   console.log(`pinyin('${text}', 'tone') =>`, tone);
-  // console.log(`tolerant('${text}', '${num}')`, tolerant(text, num))
-  // console.log(`tolerant('${text}', '${tone}')`, tolerant(text, tone))
 }

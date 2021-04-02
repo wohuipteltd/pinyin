@@ -1,0 +1,16 @@
+{
+	"name": "Node.js & TypeScript",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+
+	"settings": { 
+		"terminal.integrated.shell.linux": "/bin/zsh"
+	},
+
+	"extensions": [
+		"dbaeumer.vscode-eslint"
+	],
+
+	"remoteUser": "node"
+}
