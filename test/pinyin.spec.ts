@@ -10,6 +10,10 @@ describe('pinyin', () => {
     assert.deepStrictEqual(numeric_tones('nǚ rén'), [['nv', 3], ['ren', 2]])
   })
 
+  it('说', () => {
+    assert.deepStrictEqual(pinyin('说', 'tone'), 'shuō')
+  })
+
   it('yi1 zhi1 mao1', () => {
     assert.deepStrictEqual(pinyin('yi1 zhi1 mao1', 'num'), 'yi1 zhi1 mao1')
     assert.deepStrictEqual(pinyin('yi1 zhi1 mao1', 'num'), 'yi1 zhi1 mao1')

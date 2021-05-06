@@ -88,7 +88,8 @@ const swizzleDictionary = {
   '钥': 'yao4',
   '鹖': 'he2',
   '匙': 'chi2/shi5',
-  '壳': 'qiao4/ke2'
+  '壳': 'qiao4/ke2',
+  '说': 'shuo1/shui4'
 }
 
 const lookup = (i: number): -1 | { character: string, count: number, pinyin: string } | null => {
