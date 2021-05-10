@@ -208,27 +208,29 @@ export const tolerant = (text: string, pinyin_str: string) => {
 
   let breaks_on: any = null
   for (const seg of pinyin_iterator(text)) {
-    if (Array.isArray(seg)) {
-      let matched_any = false
-      for (const item of seg) {
-        const array = re_filter(PinyinRegexp, item)
-        let j = 0
-        console.log(`try_consume("${array}")`)
-        for (const c of array) {
-          
-          if (try_consume(c)) {
-            matched_any = true
+    if (seg.pinyin) {
+      if (Array.isArray(seg.pinyin)) {
+        let matched_any = false
+        for (const item of seg.pinyin) {
+          const array = re_filter(PinyinRegexp, item)
+          let j = 0
+          console.log(`try_consume("${array}")`)
+          for (const c of array) {
+            
+            if (try_consume(c)) {
+              matched_any = true
+            }
+            j++
           }
-          j++
+          if (matched_any) {
+            breaks_on = array[j - 1]
+            break
+          }
         }
-        if (matched_any) {
-          breaks_on = array[j - 1]
-          break
-        }
+      } else {
+        console.log(`try_consume("${seg.pinyin}")`)
+        try_consume(seg.pinyin)
       }
-    } else {
-      console.log(`try_consume("${seg}")`)
-      try_consume(seg)
     }
   }
   const matches = i == pinyin_array.length
@@ -292,12 +294,15 @@ const patch_hanzi_num = (hanzi_pinyin: string) => {
   return hanzi_pinyin.replace('u:', 'v')
 }
 
-function hanziPinyin(text: string) {
+function hanziPinyin(text: string): string[]|string {
   return swizzleDictionary[text]?.split('/') || hanzi.getPinyin(text)
 }
 
-function* pinyin_iterator(text: string) {
-  if (!text) return text
+export function* pinyin_iterator(text: string) {
+  if (!text) {
+    yield null
+    return
+  }
 
   const character_array: {chinese: boolean, group: string }[] = []
   NoneChineseRegexp.exec(text)
@@ -325,20 +330,28 @@ function* pinyin_iterator(text: string) {
   // console.log(character_array)
   for (const { group, chinese } of character_array) {
     if (!chinese) {
-      yield group
+      yield { nonChinese: group }
     } else {
       for (const seg of hanzi.segment(group)) {
         const pinyin = hanziPinyin(seg)
         // console.log(`hanziPinyin(${seg}) = ${pinyin}`);
         if (Array.isArray(pinyin)) {
-          yield pinyin.map(patch_hanzi_num)
+          yield { pinyin: pinyin.map(patch_hanzi_num) }
         } else if (pinyin) {
-          yield patch_hanzi_num(pinyin)
+          yield { pinyin: patch_hanzi_num(pinyin) }
         } else {
-          yield seg
+          yield { nonParsable: seg as string }
         }
       }
     }
+  }
+}
+
+function typedPinyin(text: string, type: 'tone' | 'num') {
+  if (type == 'tone') {
+    return numeric_tones(text).map(nt => revert_numeric_tone(nt)).join(' ')
+  } else {
+    return tone2num(text)
   }
 }
 
@@ -346,21 +359,21 @@ export function pinyin(text: string, type: 'tone' | 'num') {
   if (!hanzi.ifComponentExists('一')) {
     hanzi.start()
   }
-  const result = []
+  const result: string[] = []
   for (const seg of pinyin_iterator(text)) {
-    if (Array.isArray(seg)) {
-      result.push(seg[0])
-    } else {
-      result.push(seg)
+    if (seg.pinyin) {
+      if (Array.isArray(seg.pinyin)) {
+        result.push(typedPinyin(seg.pinyin[0], type))
+      } else {
+        result.push(typedPinyin(seg.pinyin, type))
+      }
+    } else if (seg.nonParsable) {
+      result.push(seg.nonParsable)
+    } else if (seg.nonChinese) {
+      result.push(typedPinyin(seg.nonChinese, type))
     }
   }
-  const num = result.join(' ').toLowerCase()
-  if (type == 'tone') {
-    return numeric_tones_binary(num, true, ' ')
-  } else {
-    return tone2num(num)
-  }
-  return num
+  return result.join(' ').toLowerCase()
 }
 
 const revert_numeric_tone_regexp = (tone_num: NumericTone) => {
