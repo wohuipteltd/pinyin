@@ -1,6 +1,6 @@
 import * as hanzi from 'hanzi'
 
-const PinyinRegexp = /([A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
+export const PinyinRegexp = /([A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
 const ChineseRegexp = /([\u3400-\u9fa5]|[A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
 const NoneChineseRegexp = /([^\u3400-\u9fa5]+)/g
 
@@ -298,14 +298,8 @@ function hanziPinyin(text: string): string[]|string {
   return swizzleDictionary[text]?.split('/') || hanzi.getPinyin(text)
 }
 
-export function* pinyin_iterator(text: string) {
-  if (!text) {
-    yield null
-    return
-  }
-
+function groupByChinese(text: string) {
   const character_array: {chinese: boolean, group: string }[] = []
-  NoneChineseRegexp.exec(text)
   let previous = 0
   text.replace(NoneChineseRegexp, (_, group, start) => {
     if (start !== previous) {
@@ -327,6 +321,16 @@ export function* pinyin_iterator(text: string) {
       group: text.substring(previous)
     })
   }
+  return character_array
+}
+
+function* pinyin_iterator(text: string) {
+  if (!text) {
+    yield null
+    return
+  }
+
+  const character_array = groupByChinese(text)
   // console.log(character_array)
   for (const { group, chinese } of character_array) {
     if (!chinese) {
