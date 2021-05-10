@@ -357,6 +357,8 @@ export function pinyin(text: string, type: 'tone' | 'num') {
   const num = result.join(' ').toLowerCase()
   if (type == 'tone') {
     return numeric_tones_binary(num, true, ' ')
+  } else {
+    return tone2num(num)
   }
   return num
 }
@@ -379,7 +381,7 @@ const revert_numeric_tone_regexp = (tone_num: NumericTone) => {
 export const numeric_tones_binary = (pinyin_str: string, binary: boolean, separator: string) => {
   return numeric_tones(pinyin_str).map(tone => {
     return binary ? revert_numeric_tone(tone) : revert_numeric_tone_regexp(tone)
-  }).filter(x => x).join(separator)
+  }).filter(Boolean).join(separator)
 }
 
 export function chinese(pinyin_str: string) {
