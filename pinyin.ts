@@ -3,6 +3,23 @@ import * as hanzi from 'hanzi'
 export const PinyinRegexp = /([A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
 const ChineseRegexp = /([\u3400-\u9fa5]|[A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ][A-Za-züēéěèāīōūǖáíóúǘǎǐǒǔǚàìòùǜńňǹ0-9]*)/g
 const NoneChineseRegexp = /([^\u3400-\u9fa5]+)/g
+const _ToneRe = `
+([mM]iu|[pmPM]ou|[bpmBPM](o|e(i|ng?)?|a(ng?|i|o)?|i(e|ng?|a[no])?|u))|
+([fF](ou?|[ae](ng?|i)?|u))|([dD](e(i|ng?)|i(a[on]?|u))|
+[dtDT](a(i|ng?|o)?|e(i|ng)?|i(a[on]?|e|ng|u)?|o(ng?|u)|u(o|i|an?|n)?))|
+([nN]eng?|[lnLN](a(i|ng?|o)?|e(i|ng)?|i(ang|a[on]?|e|ng?|u)?|o(ng?|u)|u(o|i|an?|n)?|ve?))|
+([ghkGHK](a(i|ng?|o)?|e(i|ng?)?|o(u|ng)|u(a(i|ng?)?|i|n|o)?))|
+([zZ]h?ei|[czCZ]h?(e(ng?)?|o(ng?|u)|ao|u?a(i|ng?)?|u(o|i|n)?))|
+([sS]ong|[sS]hua(i|ng?)?|[sS]hei|[sS][h]?(a(i|ng?|o)?|en?g?|ou|u(a?n|o|i)?|i))|
+([rR]([ae]ng?|i|e|ao|ou|ong|u[oin]|ua?n?))|
+([jqxJQX](i(a(o|ng?)?|[eu]|ong|ng?)?|u(e|a?n)?))|
+(([aA](i|o|ng?)?|[oO]u?|[eE](i|ng?|r)?))|
+([wW](a(i|ng?)?|o|e(i|ng?)?|u))|
+[yY](a(o|ng?)?|e|in?g?|o(u|ng)?|u(e|a?n)?)`.replace(/\n/g, '')
+
+const SingleToneRe = new RegExp(`^(${_ToneRe})$`.replace(/\(/g, '(?:'))
+
+export const valid_phone = (phone: string) => SingleToneRe.test(phone)
 
 export type NumericTone = [string, number]
 
