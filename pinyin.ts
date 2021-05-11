@@ -106,7 +106,12 @@ const swizzleDictionary = {
   '鹖': 'he2',
   '匙': 'chi2/shi5',
   '壳': 'qiao4/ke2',
-  '说': 'shuo1/shui4'
+  '说': 'shuo1/shui4',
+  '什': 'shen2/shi2',
+  '么': 'me5',
+  '足': 'zu2',
+  '校': 'xiao4/jiao4',
+  '吗': 'ma5'
 }
 
 const lookup = (i: number): -1 | { character: string, count: number, pinyin: string } | null => {
@@ -312,7 +317,10 @@ const patch_hanzi_num = (hanzi_pinyin: string) => {
 }
 
 function hanziPinyin(text: string): string[]|string {
-  return swizzleDictionary[text]?.split('/') || hanzi.getPinyin(text)
+  if (swizzleDictionary[text]) {
+    return swizzleDictionary[text].split('/')
+  }
+  return hanzi.getPinyin(text)
 }
 
 function groupByChinese(text: string) {

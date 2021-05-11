@@ -1,5 +1,6 @@
 import * as assert from 'assert'
 import { pinyin, numeric_tones, tone2num } from '../pinyin'
+import * as hanzi from 'hanzi'
 
 describe('pinyin', () => {
   it('nǚ', () => {
@@ -14,7 +15,15 @@ describe('pinyin', () => {
     assert.deepStrictEqual(pinyin('说', 'tone'), 'shuō')
   })
 
-  it.only('compond', () => {
+  it('single pinyin issues', () => {
+    assert.deepStrictEqual(pinyin('什', 'num'), 'shen2')
+    assert.deepStrictEqual(pinyin('么', 'num'), 'me5')
+    assert.deepStrictEqual(pinyin('足', 'num'), 'zu2')
+    assert.deepStrictEqual(pinyin('校', 'num'), 'xiao4')
+    assert.deepStrictEqual(pinyin('吗', 'num'), 'ma5')
+  })
+
+  it('compond', () => {
     assert.deepStrictEqual(pinyin('yǒu yi1说yī', 'num'), 'you3 yi1 shuo1 yi1')
     assert.deepStrictEqual(pinyin('yǒu yi1说yī', 'tone'), 'yǒu yī shuō yī')
   })
