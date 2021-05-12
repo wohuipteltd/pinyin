@@ -390,16 +390,18 @@ export function pinyin(text: string, type: 'tone' | 'num') {
   }
   const result: string[] = []
   for (const seg of pinyin_iterator(text)) {
-    if (seg.pinyin) {
-      if (Array.isArray(seg.pinyin)) {
-        result.push(typedPinyin(seg.pinyin[0], type))
-      } else {
-        result.push(typedPinyin(seg.pinyin, type))
+    if (seg) {
+      if (seg.pinyin) {
+        if (Array.isArray(seg.pinyin)) {
+          result.push(typedPinyin(seg.pinyin[0], type))
+        } else {
+          result.push(typedPinyin(seg.pinyin, type))
+        }
+      } else if (seg.nonParsable) {
+        result.push(seg.nonParsable)
+      } else if (seg.nonChinese) {
+        result.push(typedPinyin(seg.nonChinese, type))
       }
-    } else if (seg.nonParsable) {
-      result.push(seg.nonParsable)
-    } else if (seg.nonChinese) {
-      result.push(typedPinyin(seg.nonChinese, type))
     }
   }
   return result.join(' ').toLowerCase()
