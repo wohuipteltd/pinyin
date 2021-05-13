@@ -210,7 +210,6 @@ export const tolerant = (text: string, pinyin_str: string) => {
   const character_array = re_filter(ChineseRegexp, text)
   if (character_array.length === 0) return true
   const pinyin_array = re_filter(PinyinRegexp, pinyin_str).map(numeric_tone)
-  console.log(pinyin_array);
   
   if (pinyin_array.length !== character_array.length) {
     console.log(`length doesn't match`, pinyin_array, character_array)
