@@ -109,6 +109,7 @@ const swizzleDictionary = {
   '说': 'shuo1/shui4',
   '什': 'shen2/shi2',
   '么': 'me5',
+  '着': 'zhe5/zhao2',
   '足': 'zu2',
   '校': 'xiao4/jiao4',
   '吗': 'ma5'

@@ -28,6 +28,10 @@ describe('pinyin', () => {
     assert.deepStrictEqual(pinyin('yǒu yi1说yī', 'tone'), 'yǒu yī shuō yī')
   })
 
+  it('爸爸深深的爱着我们', () => {
+    assert.deepStrictEqual(pinyin('爸爸深深的爱着我们', 'tone'), 'bà ba shēn shēn de ài zhe wǒ men')
+    assert.deepStrictEqual(pinyin('着火了快跑啊', 'tone'), 'zháo huǒ le kuài pǎo ā')
+  })
 
   it('yi1 zhi1 mao1', () => {
     assert.deepStrictEqual(pinyin('yi1 zhi1 mao1', 'num'), 'yi1 zhi1 mao1')
