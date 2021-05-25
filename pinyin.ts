@@ -308,7 +308,11 @@ export const revert_numeric_tone = (tone_num: NumericTone) => {
 
 export const tone2num = (text: string) => {
   return numeric_tones(text).map(([tone, num]) => {
-    return tone + num
+    if (valid_phone(tone)) {
+      return tone + num
+    } else {
+      return tone
+    }
   }).join(' ')
 }
 

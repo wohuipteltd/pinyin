@@ -15,6 +15,10 @@ describe('pinyin', () => {
     assert.deepStrictEqual(pinyin('说', 'tone'), 'shuō')
   })
 
+  it('tone to num', () => {
+    assert.deepStrictEqual(pinyin('tā yǒu jǐ gè tóng xué ？', 'num'), 'ta1 you3 ji3 ge4 tong2 xue2 ？')
+  })
+
   it('single pinyin issues', () => {
     assert.deepStrictEqual(pinyin('什', 'num'), 'shen2')
     assert.deepStrictEqual(pinyin('么', 'num'), 'me5')
@@ -24,9 +28,11 @@ describe('pinyin', () => {
   })
 
   it('valid_phone', () => {
-    // assert.deepStrictEqual(valid_phone('chi'), true)
+    assert.deepStrictEqual(valid_phone('ci'), true)
+    assert.deepStrictEqual(valid_phone('chi'), true)
     assert.deepStrictEqual(valid_phone('zi'), true)
     assert.deepStrictEqual(valid_phone('zhi'), true)
+    assert.deepStrictEqual(valid_phone('Ri'), true)
   })
 
   it('compond', () => {
