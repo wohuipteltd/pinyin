@@ -15,6 +15,10 @@ describe('pinyin', () => {
     assert.deepStrictEqual(pinyin('说', 'tone'), 'shuō')
   })
 
+  it('追', () => {
+    assert.deepStrictEqual(pinyin('追', 'tone'), 'zhuī')
+  })
+
   it('tone to num', () => {
     assert.deepStrictEqual(pinyin('tā yǒu jǐ gè tóng xué ？', 'num'), 'ta1 you3 ji3 ge4 tong2 xue2 ？')
   })
