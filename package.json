@@ -9,7 +9,7 @@
   "main": "dist/pinyin.js",
   "types": "dist/pinyin.d.ts",
   "license": "MIT",
-  "version": "1.5.8",
+  "version": "1.5.9",
   "dependencies": {
     "hanzi": "^2.1.5"
   },
