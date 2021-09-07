@@ -113,7 +113,8 @@ const swizzleDictionary = {
   '足': 'zu2',
   '校': 'xiao4/jiao4',
   '吗': 'ma5',
-  '追': 'zhui1'
+  '追': 'zhui1',
+  '万': 'wan4'
 }
 
 const lookup = (i: number): -1 | { character: string, count: number, pinyin: string } | null => {
